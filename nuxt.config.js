@@ -28,7 +28,8 @@ export default {
   css: [
     '@/assets/css/normalize.css',
     '@/assets/css/global.css',
-    '@/assets/scss/colors.scss'
+    '@/assets/scss/colors.scss',
+    '@/assets/scss/mixins.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins

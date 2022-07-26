@@ -1,0 +1,6 @@
+@mixin animationRulers {
+  transition-property: background-color;
+  transition-delay: 0.1s;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
