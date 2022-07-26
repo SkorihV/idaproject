@@ -26,6 +26,9 @@ export default {
     TheProductForm,
     TheSortProducts
   },
+  beforeMount() {
+    this.$store.dispatch('INIT_PROCESSING_PUT_PRODUCT_FROM_STORE');
+  }
 }
 </script>
 

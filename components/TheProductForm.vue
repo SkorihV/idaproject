@@ -1,5 +1,10 @@
 <template>
-  <form action="#" class="form-product" @submit.prevent>
+  <form
+    action="#"
+    class="form-product"
+    @submit.prevent
+    ref="addProductForm"
+  >
     <vCustomTextInput
       label-text='Наименование товара'
       placeholder="Введите наименование товара"
@@ -9,10 +14,15 @@
       @checkedAccessValue="checkedAccessValues"
     ></vCustomTextInput>
 
-    <div class="form__group-item">
-      <label class="form__label" for="product-description">Описание товара</label>
-      <textarea class="form__textarea" id="product-description" placeholder="Введите описание товара"></textarea>
-    </div>
+
+    <vCustomTextInput
+      label-text='Описание товара'
+      placeholder="Введите описание товара"
+      id-for-label="product-description"
+      :is-required="false"
+      @checkedAccessValue="checkedAccessValues"
+      typeInput="textarea"
+    ></vCustomTextInput>
 
     <vCustomTextInput
       label-text='Ссылка на изображение товара'
@@ -27,12 +37,16 @@
       label-text='Цена товара'
       placeholder="Введите цену"
       id-for-label="product-price"
-      :validation-rules="{reg: '^\\d*$'}"
+      :validation-rules="{reg: '^\\d*$|(^\\d*\\.\\d{0,2}$)'}"
       :is-required="false"
       @checkedAccessValue="checkedAccessValues"
     ></vCustomTextInput>
 
-    <button class="form__add-product" :class="{'isSend': isPostForm}">Добавить товар</button>
+    <button
+      class="form__add-product"
+      :class="{'isSend': isPostForm}"
+      @click="addProduct"
+    >Добавить товар</button>
   </form>
 </template>
 
@@ -55,10 +69,31 @@ export default {
     checkedAccessValues(data) {
       const key = Object.keys(data)[0];
       this.accessValues[key] = data[key];
-
       this.isPostForm = Object.values(this.accessValues).every(value => value);
-      console.log(this.accessValues)
+    },
+    async addProduct() {
+      if (!this.isPostForm) {
+        return false;
+      }
+      const formData = new FormData(this.$refs.addProductForm)
+      const id          = Math.random();
+      const name        = formData.get('product-name')
+      const price       = formData.get('product-price')
+      const image       = formData.get('product-image-link')
+      const description = formData.get('product-description')
+      const newProduct = {
+        id,
+        name,
+        price,
+        image,
+        description,
+      };
 
+      await this.$store.dispatch('ADD_PRODUCT', newProduct)
+        .then(() => {
+          this.$refs.addProductForm.reset();
+          this.isPostForm = false;
+        });
     }
   },
   computed: {

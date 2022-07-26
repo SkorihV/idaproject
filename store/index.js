@@ -1,57 +1,60 @@
 export const state = () => ({
     productsList: [
-      {
-        id: 1,
-        name: 'Товар 1',
-        description: 'Краткое описание товара 1',
-        price: 10000,
-        unit: "RUB"
-      },
-      {
-        id: 2,
-        name: 'Товар 2',
-        description: 'Краткое описание товара 2',
-        price: 10000,
-        unit: "RUB"
-      },
-      {
-        id: 3,
-        name: 'Товар 3',
-        description: 'Краткое описание товара 3',
-        price: 10000,
-        unit: "RUB"
-      },
-      {
-        id: 4,
-        name: 'Товар 4',
-        description: 'Краткое описание товара 4',
-        price: 10000,
-        unit: "RUB"
-      }
-    ]
+    ],
+    sortType: 'default'
  })
 
 export const getters =  {
   getProductsList: state => state.productsList,
+  getSortType: state => state.sortType
 }
 
 export const mutations =  {
-  PUT_PRODUCT: (state, productData) => {
-    state.productsList.push(productData);
+  PUT_PRODUCT: (state, newProductData) => {
+    const productListStore = localStorage.getItem('idaProjectStore');
+    let productList = [];
+
+
+    state.productsList.push(newProductData);
+
+    if (productListStore) {
+      productList = JSON.parse(productListStore);
+    }
+    productList.push(newProductData);
+    localStorage.setItem('idaProjectStore', JSON.stringify(productList));
+
+  },
+  PUT_PRODUCTS_FROM_STORE: (state) => {
+    const productListStore = localStorage.getItem('idaProjectStore');
+
+    if (!productListStore) { return false  }
+
+    let productList = JSON.parse(productListStore);
+    productList.forEach(item => {
+      state.productsList.push(item);
+    })
+
   },
   DELETE_PRODUCT: (state, productId) => {
-    console.log(state)
-    const newList = state.productsList.filter((item) => Number(item.id) !== Number(productId))
-    state.productsList = newList;
+    state.productsList = state.productsList.filter((item) => Number(item.id) !== Number(productId));
+  },
+  CHANGE_SORT_TYPE: (state, newType) => {
+    state.sortType = newType;
   }
 }
 
 export const actions = {
-  ADD_PRODUCT({commit}, product) {
-    commit('PUT_PRODUCT', product);
+  async ADD_PRODUCT({commit}, newProductData) {
+    await commit('PUT_PRODUCT', newProductData);
+  },
+  async INIT_PROCESSING_PUT_PRODUCT_FROM_STORE({commit}) {
+    await commit('PUT_PRODUCTS_FROM_STORE');
   },
   REMOVE_PRODUCT({commit}, productId) {
     commit('DELETE_PRODUCT', productId);
+  },
+  ADD_SORT_TYPE({commit}, sortType) {
+    commit('CHANGE_SORT_TYPE', sortType);
   }
 }
 

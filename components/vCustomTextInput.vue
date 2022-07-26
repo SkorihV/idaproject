@@ -5,18 +5,25 @@
       v-if="typeInput === 'text'"
       v-model="inputValue"
       class="form__input"
+      :class="{'valueNotAccess': !valueAccess}"
       :required=isRequired
       type="text"
       :id="idForLabel"
+      :name="idForLabel"
       :placeholder="placeholder"
+      autocomplete="off"
     >
     <textarea
-      v-else-if="typeInput === 'textarea'"
+      v-if="typeInput === 'textarea'"
       v-model="inputValue"
       class="form__textarea"
+      :class="{'valueNotAccess': !valueAccess}"
       :required=isRequired
       :id="idForLabel"
-      :placeholder="placeholder">
+      :name="idForLabel"
+      :placeholder="placeholder"
+      autocomplete="off"
+    >
     </textarea>
     <div
       class="form__padding-error"
@@ -73,16 +80,15 @@ export default {
     const dataAccess = {
       [this.idForLabel] : this.isRequiredCheck
     }
-    console.log(dataAccess)
+    this.valueAccess = this.isRequiredCheck;
     this.$emit('checkedAccessValue', dataAccess );
   },
   data: () => {
     return {
       inputValue: '',
-      valueAccess: false
+      valueAccess: false,
     }
   },
-
   computed: {
     checkedValue(){
       let controlPoints = [];
@@ -116,7 +122,7 @@ export default {
     }
   },
   watch: {
-    inputValue(){
+    inputValue() {
       this.valueAccess = this.checkedValue;
       const dataAccess = {
         [this.idForLabel] : this.valueAccess
@@ -163,6 +169,9 @@ export default {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     border: none;
+    &.valueNotAccess {
+      border: 1px solid #FF8484;
+    }
   }
   &__input::placeholder {
     color: #B4B4B4;

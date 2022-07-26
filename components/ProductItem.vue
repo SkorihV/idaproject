@@ -1,17 +1,17 @@
 <template>
   <div class="product__item">
     <div class="product__remove"
-      @click = 'remove'
+      @click='remove'
     ></div>
     <div class="product__image-wrapper">
-      <img src="@/static/product-photo.png" alt="product" class="product__image">
+      <img :src="productData.image" alt="product" class="product__image">
     </div>
     <div class="product__content-wrapper">
       <div class="product__name">{{productData.name}}</div>
       <div class="product__description">{{productData.description}}</div>
-      <div class="product__price-wrapper">
-        <div class="product__price">{{productData.price}}</div>
-        <div class="product__unit">руб.</div>
+      <div class="product__price-wrapper" v-if="productData.price">
+        <div class="product__price">{{priceBeforeSeparatorThousands}}</div>
+        <div class="product__unit">&nbsp;руб.</div>
       </div>
     </div>
   </div>
@@ -30,6 +30,20 @@ export default {
     remove() {
       this.$store.dispatch('REMOVE_PRODUCT', this.productData.id)
     }
+  },
+  computed: {
+    isPrice() {
+      return this.productData?.price.toString().length;
+    },
+    priceBeforeSeparatorThousands () {
+      if (this.productData.price.toString().length) {
+        let price = this.productData.price;
+        let parts = price.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return parts.join(".");
+      }
+      return false;
+    }
   }
 }
 </script>
@@ -38,6 +52,7 @@ export default {
 
 .product {
   &__item {
+    @include animationRulers;
      flex:1 1 30%;
      max-width: 30%;
      background: #FFFEFB;
@@ -45,6 +60,10 @@ export default {
      border-radius: 4px;
      position: relative;
      margin-bottom: 16px;
+    &:hover {
+      background: #efeeeb;
+
+    }
   @media all and (max-width: 1150px) {
     max-width: 47%;
     flex:1 1 47%;
