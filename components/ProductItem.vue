@@ -9,10 +9,11 @@
     <div class="product__content-wrapper">
       <div class="product__name">{{productData.name}}</div>
       <div class="product__description">{{productData.description}}</div>
-      <div class="product__price-wrapper" v-if="productData.price">
+      <div class="product__price-wrapper" v-if="isPrice">
         <div class="product__price">{{priceBeforeSeparatorThousands}}</div>
         <div class="product__unit">&nbsp;руб.</div>
       </div>
+      <div class="product__add-cart" @click="addProductInCart">Добавить в корзину</div>
     </div>
   </div>
 </template>
@@ -29,12 +30,19 @@ export default {
   methods: {
     remove() {
       this.$store.dispatch('REMOVE_PRODUCT', this.productData.id)
+    },
+    addProductInCart() {
+      this.$store.dispatch('ADD_PRODUCT_IN_CART', this.productData);
     }
   },
   computed: {
     isPrice() {
       return this.productData?.price.toString().length;
     },
+    /**
+     * Разделяем цену на тысячи
+     * @returns {string}
+     */
     priceBeforeSeparatorThousands () {
       if (this.productData.price.toString().length) {
         let price = this.productData.price;
@@ -42,7 +50,6 @@ export default {
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         return parts.join(".");
       }
-      return false;
     }
   }
 }
@@ -91,6 +98,7 @@ export default {
      top: -10px;
      display: none;
      cursor: pointer;
+    z-index: 2;
   @media all and (max-width: 768px) {
     display: block;
     right: -5px ;
@@ -109,7 +117,6 @@ export default {
   &__content-wrapper {
      display: flex;
      flex-direction: column;
-     align-items: flex-start;
      margin: 16px 24px;
    }
   &__name {
@@ -135,6 +142,15 @@ export default {
      font-size: 24px;
      line-height: 30px;
      color: #3F3F3F;
+  }
+  &__add-cart {
+    border-radius: 4px;
+    background-color: #32d032;
+    border: 1px solid green;
+    padding: 5px;
+    margin-top: auto;
+    text-align: center;
+    cursor: pointer;
   }
 }
 </style>
