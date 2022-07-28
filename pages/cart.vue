@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="cart__details">
-      <div class="cart__full-price">Общая стоимость товаров: {{fullPrice}} руб.</div>
+      <div v-if="fullPrice" class="cart__full-price">Общая стоимость товаров: {{fullPrice}} руб.</div>
     </div>
   </main>
 </template>

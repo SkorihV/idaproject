@@ -26,7 +26,6 @@ export default {
     async removeProductInCart(productId) {
       await  this.$store.dispatch('REMOVE_PRODUCT_IN_CART', productId)
         .then(() => { if (this.isEmpty) { this.isOpenCart = false; }});
-
     }
   },
   computed: {
