@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: "TheSortProducts",
+  name: "TheProductSort",
   data: () => {
     return {
       sortType: 'default',
